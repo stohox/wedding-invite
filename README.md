@@ -34,6 +34,19 @@
   - 8 页触达漏斗、24 小时访问分布、访客地域条形图、设备分布、互动事件排行、最近 300 条事件流
 - `tools/gen_track_report.py`：看板生成器 —— SSH 拉取服务器 stats + 明细，注入模板生成看板；内置 Node 语法自检与运行时错误显示兜底
 
+## 访问方式
+
+| 入口 | 地址 | 说明 |
+|------|------|------|
+| ★ 正式入口 | https://yakstudent.monkeyjun.asia/wedding/ | 自有服务器 + nginx 托管，微信 JSSDK 签名、缓存策略均绑定此域名 |
+| Pages 镜像 | https://stohox.github.io/wedding-invite/ | GitHub Pages 自动部署（`site/` 目录，push 即发布） |
+
+**Pages 镜像说明**：
+
+- 页面内 API 基址自适应 —— 非主域名环境下自动指向 `https://yakstudent.monkeyjun.asia`（nginx 已为 `/wedding-api/`、`/wedding-track/` 开启 CORS），RSVP、弹幕、游戏排行、埋点等功能在镜像上照常工作
+- 微信 JSSDK 签名仅绑定主域名，分享卡片配置在镜像域名下不生效 —— **正式分发仍请使用主域名链接**
+- 部署流程：push 到 `main` 且 `site/` 有变更 → Actions 自动构建 → Pages 发布；也可在 Actions 页面手动触发 `workflow_dispatch`
+
 ## 使用
 
 ```bash

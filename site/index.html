@@ -1218,7 +1218,7 @@ const CONFIG = {
     e.preventDefault();
     const name = $('#rsvpName').value.trim();
     if (!name) { $('#rsvpName').focus(); return; }
-    fetch('/wedding-api/rsvp', {
+    fetch('' + API_BASE + '/wedding-api/rsvp', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, attend: attend, count: attend === 'yes' ? cnt : 0 })
     }).then(r => r.json()).then(res => {
@@ -1237,7 +1237,7 @@ const CONFIG = {
   let wishes = [];
   let wishIdx = 0;
   function loadWishes() {
-    fetch('/wedding-api/guestbook').then(r => r.json()).then(list => {
+    fetch('' + API_BASE + '/wedding-api/guestbook').then(r => r.json()).then(list => {
       if (Array.isArray(list)) {
         const changed = list.length !== wishes.length;
         wishes = list;
@@ -1279,7 +1279,7 @@ const CONFIG = {
   }
 
   function sendWish(name, msg) {
-    return fetch('/wedding-api/guestbook', {
+    return fetch('' + API_BASE + '/wedding-api/guestbook', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, msg: msg })
     }).then(r => r.json()).then(res => {
@@ -1686,7 +1686,7 @@ const CONFIG = {
     $('#gViewBoard').style.display = 'none';
     $('#gViewStart').style.display = 'flex';
     gMask.style.display = 'flex';
-    fetch('/wedding-api/leaderboard?game=candy').then(r => r.json()).then(list => {
+    fetch('' + API_BASE + '/wedding-api/leaderboard?game=candy').then(r => r.json()).then(list => {
       $('#gTop1').textContent = (list && list.length)
         ? '当前榜首：' + list[0].name + ' · ' + list[0].score + ' 分'
         : '榜首虚位以待';
@@ -1764,7 +1764,7 @@ const CONFIG = {
     const name = inputEl.value.trim() || '神秘亲友';
     saveName(name);
     boardEl.innerHTML = '<div class="b-empty">加载中…</div>';
-    fetch('/wedding-api/score', {
+    fetch('' + API_BASE + '/wedding-api/score', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, game: game, score: score })
     }).then(r => r.json()).then(res => {
@@ -1907,7 +1907,7 @@ const CONFIG = {
   var img = 'https://yakstudent.monkeyjun.asia/wedding/assets/share-thumb.jpg?v=1';
   var url = location.href.split('#')[0];
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/wedding-api/wx-sign?url=' + encodeURIComponent(url));
+  xhr.open('GET', '' + API_BASE + '/wedding-api/wx-sign?url=' + encodeURIComponent(url));
   xhr.onload = function () {
     try {
       var c = JSON.parse(xhr.responseText);
@@ -1940,13 +1940,14 @@ const CONFIG = {
     var sid = "";
     try {
       sid = sessionStorage.getItem("wSid");
-      if (!sid) { sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); sessionStorage.setItem("wSid", sid); }
+      if (!sid) { sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); var API_BASE = (location.hostname === "yakstudent.monkeyjun.asia") ? "" : "https://yakstudent.monkeyjun.asia";
+    sessionStorage.setItem("wSid", sid); }
     } catch (e) { sid = "s" + Date.now().toString(36); }
     function send(event, data) {
       try {
         var body = JSON.stringify({ sid: sid, event: event, data: data || {} });
-        if (navigator.sendBeacon) navigator.sendBeacon("/wedding-track/track", body);
-        else fetch("/wedding-track/track", { method: "POST", body: body, keepalive: true });
+        if (navigator.sendBeacon) navigator.sendBeacon("" + API_BASE + "/wedding-track/track", body);
+        else fetch("" + API_BASE + "/wedding-track/track", { method: "POST", body: body, keepalive: true });
       } catch (e) {}
     }
     /* 触达漏斗：每个 section 进入视口过半记一次 page_view（每会话每页一次） */
